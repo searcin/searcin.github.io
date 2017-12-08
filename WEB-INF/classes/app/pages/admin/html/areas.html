@@ -1,0 +1,109 @@
+<div class="areas details">
+    <div ng-if="admin.index === 0" ng-init="admin.getAreas()">
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-success btn-xs" type="button" ui-sref="admin({index:1})"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Add Area</button>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col-sm-12">
+                <div class="table-responsive" ng-if="admin.areas.length > 0">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in admin.areas | orderBy:'name'">
+                                <td>{{$index+1}}</td>
+                                <td>{{item.name}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs mr-10" ui-sref="admin({index:1,selected:item.id})"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button>
+
+                                    <button class="btn btn-danger btn-xs mr-10" ng-click="admin.area.id = item.id;admin.deleteArea();"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="admin.index === 1">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4><button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:0,selected:''})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;&nbsp;
+                    <span ng-if="admin.selected === ''">Add Area</span><span ng-if="admin.selected !== ''" ng-init="admin.area.id = admin.selected;admin.getArea();">Update Area</span></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <form class="form mt-20" name="areas">
+                    <label>Area Name:</label>
+                    <input type="text" class="form-control" ng-model="admin.area.name" /><br>
+                    <button class="btn btn-primary" type="submit" ng-disabled="!admin.area.name" ng-click="admin.saveArea()">Save</button>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-20" ng-if="admin.selected !== ''">
+            <div class="col-sm-12">
+                <p class="mt-5" ng-if="admin.area.updatedOn && admin.area.updatedBy" ng-init="admin.user.username = admin.area.updatedBy;admin.getByUsername()">Last updated on <b>{{admin.area.updatedOn|date:'MM/dd/yyyy h:mma'}}</b> by <b>{{(admin.user.name === admin.current.name)?'You':admin.user.name;}}</b></p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- <div class="categories" ng-init="admin.getAreas()">
+        <div class="row">
+            <div class="col-sm-12">
+                <uib-tabset active="admin.index">
+                    <uib-tab index="0" heading="Available" ui-sref="admin({index:'0'})">
+                        <div class="admin-container">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in admin.areas">
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{item.name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </uib-tab>
+                    <uib-tab index="1" heading="Add" ui-sref="admin({index:'1'})">
+                        <div class="admin-container">
+                            <form class="form" name="areas">
+                                <label>Area Name:</label>
+                                <input type="text" class="form-control" ng-model="admin.area.name" />
+                                <hr>
+                                <button class="btn btn-primary" type="submit" ng-click="admin.saveArea()" ng-disabled="!admin.area.name">Add</button>
+                            </form>
+                        </div>
+                    </uib-tab>
+                    <uib-tab index="2" heading="Edit/Delete" ui-sref="admin({index:'2'})">
+                        <div class="admin-container">
+                            <form class="form" name="areas">
+                                <label>Select Area:</label>
+                                <select class="form-control" ng-options="item as item.name for item in admin.areas" ng-model="admin.area">
+                                    </select>
+                                    <hr>
+                                <input type="text" class="form-control" ng-model="admin.area.name"/><br>
+                                <button class="btn btn-primary" type="submit" ng-click="admin.saveArea()" ng-disabled="!admin.area">Update</button>
+                                <button class="btn btn-primary" type="submit" ng-click="admin.deleteArea()" ng-disabled="!admin.area">Delete</button>
+                            </form>
+                        </div>
+                    </uib-tab>
+                </uib-tabset>
+            </div>
+    
+        </div>
+    </div> -->

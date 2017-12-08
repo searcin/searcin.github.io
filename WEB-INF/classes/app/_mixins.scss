@@ -1,0 +1,74 @@
+@mixin min-height($height) {
+    height: calc(100% - $height);
+}
+
+@mixin box-shadow($color, $x, $y, $blur) {
+    @if $color=='null' {
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        -o-box-shadow: none;
+        box-shadow: none;
+    }
+    @else {
+        -webkit-box-shadow: $color $x $y $blur;
+        -moz-box-shadow: $color $x $y $blur;
+        -o-box-shadow: $color $x $y $blur;
+        box-shadow: $color $x $y $blur;
+    }
+}
+
+@mixin border-radius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -o-border-radius: $radius;
+    border-radius: $radius;
+}
+
+@mixin border-radius-4($r1, $r2, $r3, $r4) {
+    -webkit-border-radius: $r1 $r2 $r3 $r4;
+    -moz-border-radius: $r1 $r2 $r3 $r4;
+    -o-border-radius: $r1 $r2 $r3 $r4;
+    border-radius: $r1 $r2 $r3 $r4;
+}
+
+@mixin background-img($url, $width, $height, $xPos, $yPos) {
+    background: url($url)no-repeat;
+    background-size: $width $height;
+    background-position: $xPos $yPos;
+}
+
+@mixin vertical-center() {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -90%) !important;
+    -ms-transform: translate(-50%, -90%) !important;
+    /* IE 9 */
+    -webkit-transform: translate(-50%, -90%) !important;
+    /* Safari and Chrome */
+}
+
+@-webkit-keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@mixin fade-message($duration, $delay) {
+    -webkit-animation: fadeOut $duration forwards;
+    animation: fadeOut $duration forwards;
+    -webkit-animation-delay: $delay;
+    animation-delay: $delay;
+}

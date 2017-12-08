@@ -1,0 +1,125 @@
+<div class="categories details">
+    <div ng-if="admin.index === 0" ng-init="admin.getCategories()">
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-success btn-xs" type="button" ui-sref="admin({index:1})"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Add Category</button>
+            </div>
+        </div>
+
+        <div class="row mt-20" ng-if="admin.categories.length > 0">
+            <div class="col-sm-12">
+                   
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Category Name</th>
+                                <th>Sub Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in admin.categories | orderBy:'name'">
+                                <td>{{$index+1}}</td>
+                                <td>{{item.name}}</td>
+                                <td>
+                                    <button class="btn btn-success btn-xs mr-10" ui-sref="admin({index:2,selected:item.id})"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i></button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs mr-10" ui-sref="admin({index:1,selected:item.id})"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button>
+
+                                    <button class="btn btn-danger btn-xs mr-10" ng-click="admin.category.id = item.id;admin.deleteCategory();"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="admin.index === 1">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4><button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:0,selected:''})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;&nbsp;
+                    <span ng-if="admin.selected === ''">Add Category</span><span ng-if="admin.selected !== ''" ng-init="admin.category.id = admin.selected;admin.getCategory();">Update Category</span></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+
+                <form class="form mt-20" name="categories">
+                    <label>Category Name:</label>
+                    <input type="text" class="form-control" ng-model="admin.category.name" /><br>
+
+                    <button class="btn btn-primary" type="submit" ng-disabled="!admin.category.name" ng-click="admin.saveCategory()">Save</button>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-20" ng-if="admin.selected !== ''">
+            <div class="col-sm-12">
+                <p class="mt-5" ng-if="admin.category.updatedOn && admin.category.updatedBy" ng-init="admin.user.username = admin.category.updatedBy;admin.getByUsername()">Last updated on <b>{{admin.category.updatedOn|date:'MM/dd/yyyy h:mma'}}</b> by <b>{{(admin.user.name === admin.current.name)?'You':admin.user.name;}}</b></p>
+            </div>
+        </div>
+    </div>
+    <div ng-if="admin.index === 2" ng-init="admin.category.id=admin.selected;admin.getCategory();admin.getSubCategories();">
+        <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:0,selected:''})"><i class="glyphicon glyphicon-arrow-left"></i></button>
+        <button class="btn btn-success btn-xs" type="button" ui-sref="admin({index:3,selected:admin.selected})"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Add SubCategory</button>
+        <div class="row mt-20">
+            <div class="col-sm-12">
+                <label>Category Name: </label><br>
+                <h4>{{admin.category.name}}</h4>
+            </div>
+        </div>
+        <div class="row mt-20" ng-if="admin.subcategories.length > 0">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>SubCategory Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in admin.subcategories | orderBy:'name'">
+                                <td>{{$index+1}}</td>
+                                <td>{{item.name}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs mr-10" ui-sref="admin({index:3,selected:admin.selected+','+item.id})"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button>
+
+                                    <button class="btn btn-danger btn-xs mr-10" ng-click="admin.subcategory.id = item.id;admin.deleteSubCategory();"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="admin.index === 3">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4><button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:2,selected:admin.category.id})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;&nbsp;
+                    <span ng-if="admin.selected.indexOf(',') === -1" ng-init="admin.category.id = admin.selected;">Add SubCategory</span>
+                    <span ng-if="admin.selected.indexOf(',') !== -1" ng-init="admin.category.id = admin.selected.split(',')[0];admin.subcategory.id=admin.selected.split(',')[1];admin.getSubCategory();">Update Category</span></h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <form class="form mt-20" name="categories">
+                    <label>Sub Category Name:</label>
+                    <input type="text" class="form-control" ng-model="admin.subcategory.name" /><br>
+                    <button class="btn btn-primary" type="submit" ng-disabled="!admin.subcategory.name" ng-click="admin.saveSubCategory()">Save</button>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-20" ng-if="admin.selected.indexOf(',') !== -1">
+            <div class="col-sm-12">
+                <p class="mt-5" ng-if="admin.subcategory.updatedOn && admin.subcategory.updatedBy" ng-init="admin.user.username = admin.subcategory.updatedBy;admin.getByUsername()">Last updated on <b>{{admin.subcategory.updatedOn|date:'MM/dd/yyyy h:mma'}}</b> by <b>{{(admin.user.name === admin.current.name)?'You':admin.user.name;}}</b></p>
+            </div>
+        </div>
+    </div>
+</div>

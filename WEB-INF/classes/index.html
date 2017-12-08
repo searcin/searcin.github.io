@@ -1,0 +1,49 @@
+<!doctype html>
+<html ng-app="searcin" ng-strict-di>
+
+<head>
+  <title ng-cloak>Searcin</title>
+  <base href="/">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+  <!--uncache-->
+  <!-- build:css style/vendor-%version%.min.css -->
+  <!-- style:css -->
+  <!-- endinject -->
+  <!-- endbuild -->
+
+  <!-- build:css style/app-%version%.min.css -->
+  <!-- inject:css -->
+  <!-- endinject -->
+  <!-- endbuild -->
+  <!--enduncache-->
+  <body ui-view ng-class="background" style="margin:0">
+    <!--uncache-->
+    <!-- build:js env/env.js -->
+    <!-- env:js -->
+    <!-- endinject -->
+    <!-- endbuild -->
+
+    <!-- build:js script/vendor-%version%.min.js -->
+    <!-- bower:js -->
+    <!-- endinject -->
+    <!-- endbuild -->
+
+    <!-- build:js script/app-%version%.min.js -->
+    <!-- inject:js -->
+    <!-- endinject -->
+    <!-- endbuild -->
+
+    <!-- build:js script/partial-%version%.min.js -->
+    <!-- partial:js -->
+    <!-- endinject -->
+    <!-- endbuild -->
+    <!--enduncache-->
+  </body>
+
+</html>

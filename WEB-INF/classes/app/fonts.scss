@@ -1,0 +1,19 @@
+@import 'config';
+@font-face {
+    font-family: OpenSansBold;
+    src: url($bold-url);
+    
+}
+@font-face {
+    font-family: OpenSansLight;
+    src: url($light-url);
+}
+@font-face {
+    font-family: OpenSansRegular;
+    src: url($regular-url);
+}
+
+@font-face {
+    font-family: OpenSansSemiBold;
+    src: url($semi-bold-url);
+}

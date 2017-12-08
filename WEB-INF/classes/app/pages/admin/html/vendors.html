@@ -1,0 +1,396 @@
+<div class="vendors details">
+    <div ng-if="admin.index === 0" ng-init="admin.getVendors()">
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-success btn-xs" type="button" ui-sref="admin({index:1})"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Add Vendor</button>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table table-striped" ng-if="admin.vendors.length > 0">
+                        <thead>
+                            <tr>
+                                <th style="width:10%;">S.No</th>
+                                <th style="width:70%;">Name</th>
+                                <th style="width:20%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in admin.vendors | orderBy:'name'">
+                                <td>{{$index + 1}}</td>
+                                <td>{{item.name}}
+                                </td>
+                                <td>
+                                    <button class="btn btn-default btn-xs mr-10" ng-click="admin.getDetail(item.id);">
+                                                <i class="glyphicon glyphicon-resize-full"></i>
+                                            </button>
+                                    <button class="btn btn-primary btn-xs mr-10" ui-sref="admin({index:1,selected:item.id})"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button>
+
+                                    <!-- <button class="btn btn-default btn-xs mr-10"><i class="glyphicon glyphicon-resize-full" aria-hidden="true"></i>&nbsp;&nbsp;Detail</button> -->
+
+                                    <button class="btn btn-danger btn-xs mr-10" ng-click="admin.vendor.id=item.id;admin.deleteVendor();"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>
+                                </td>
+                            </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="admin.index === 1">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4>
+                    <button class="btn btn-danger btn-xs" type="button" ui-sref="admin({index:0, selected:''})"><i class="glyphicon glyphicon-home"></i></button>&nbsp;
+                    <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:0,selected:''})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;
+                    <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:2})" ng-if="admin.vendor.category" ng-init="admin.category=admin.vendor.category;admin.getSubCategories();"><i class="glyphicon glyphicon-arrow-right"></i></button>&nbsp;&nbsp;
+                    <span ng-if="admin.selected === ''" ng-init="admin.vendor = {};admin.vendor.services = [];">Add Vendor</span>
+                    <span ng-if="admin.selected !== ''" ng-init="admin.vendor.id = admin.selected;admin.getVendor();">Update Vendor</span>
+                </h4>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-4">
+                <label>Company Name:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" ng-model="admin.vendor.name" class="form-control" />
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col-sm-4">
+                <label>Description:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" ng-model="admin.vendor.description" class="form-control" />
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col-sm-4">
+                <label>Category:</label>
+            </div>
+            <div class="col-sm-8" ng-init="admin.getCategories()">
+                <select class="form-control" ng-options="item.id as item.name for item in admin.categories | orderBy:'name'" ng-model="admin.vendor.category.id"
+                    ng-change="admin.category.id=admin.vendor.category.id;admin.getSubCategories()">
+                        </select>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col-sm-4">
+                <label>Sub Category:</label>
+            </div>
+            <div class="col-sm-8">
+                <select class="form-control" ng-options="item.id as item.name for item in admin.subcategories | orderBy:'name'" ng-model="admin.vendor.subCategory.id">
+                            </select>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col-sm-4">
+                <label>Class Range:</label>
+            </div>
+            <div class="col-sm-8" ng-init="admin.getClassRange()">
+                <select class="form-control" ng-options="item.id as item.name for item in admin.classranges" ng-model="admin.vendor.classRange.id">
+                            </select>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col-sm-4">
+                <label>Selected Services:</label>
+            </div>
+            <div class="col-sm-8">
+                <p ng-if="admin.vendor.services.length > 0 && admin.services.length > 0" ng-init="admin.setServicesSelected()">
+                    <span ng-repeat="item in admin.vendor.services">{{item.name}} <b ng-if="(admin.vendor.services.length - 1) > $index">,</b> </span>
+                </p>
+                <span ng-if="admin.vendor.services.length === 0"><p>No services selected!</p></span>
+            </div>
+        </div>
+        <div class="row mt-20" ng-init="admin.getServices()">
+            <div class="col-sm-4">
+                <label>Select Services:</label>
+            </div>
+            <div class="col-sm-8" ng-if="admin.services.length > 0">
+                <input type="text" ng-model="admin.filter.service" class="form-control" placeholder="Search" />
+                <div class="service-select" style="max-height:200px;overflow:auto;">
+                    <table class="table table-hover table-bordered">
+                        <tbody>
+                            <tr ng-repeat="item in admin.services | filter:admin.filter.service | orderBy:'name'">
+                                <td><label><input type="checkbox" ng-model="item.selected" ng-change="admin.addVendorService(item)">&nbsp;&nbsp;&nbsp;{{item.name}}</label></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col-sm-12">
+                <button class="btn btn-primary" type="button" ng-click="admin.saveVendor()">Save</button>
+            </div>
+        </div>
+        <div class="row mt-20" ng-if="admin.selected !== ''">
+            <div class="col-sm-12">
+                <p class="mt-5" ng-if="admin.vendor.updatedOn && admin.vendor.updatedBy" ng-init="admin.user.username = admin.vendor.updatedBy;admin.getByUsername()">Last updated on <b>{{admin.vendor.updatedOn|date:'dd/MM/yyyy h:mma'}}</b> by <b>{{(admin.user.name === admin.current.name)?'You':admin.user.name;}}</b></p>
+            </div>
+        </div>
+    </div>
+    <div ng-if="admin.index === 2">
+        <div class="row mb-20">
+            <div class="col-sm-12">
+                <h4>
+                    <button class="btn btn-danger btn-xs" type="button" ui-sref="admin({index:0, selected:''})"><i class="glyphicon glyphicon-home"></i></button>&nbsp;
+                    <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:1})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;
+                    <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:3})"><i class="glyphicon glyphicon-arrow-right"></i></button>&nbsp;&nbsp;
+                    <span ng-init="admin.address={};admin.vendor.id=admin.selected;admin.getAddress();admin.getAreas();">Update Address</span>
+                </h4>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Door no:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.address.doorno" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Building:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.address.building" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Nearby:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.address.nearby" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Address Line 1:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.address.address1" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Address Line 2:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.address.address2" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Area:</label>
+            </div>
+            <div class="col-sm-8">
+                <select class="form-control" ng-options="item.id as item.name for item in admin.areas" ng-model="admin.address.area.id">
+                        </select>
+            </div>
+        </div>
+        
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Latitude:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.address.lat" id="address-lat"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label>Longitude:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.address.lng" id="address-lng"/>
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-12">
+                <a href="#" class="pull-right" ng-click="admin.getLocation()">Get current location</a>
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Pincode:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.address.pincode" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-primary" type="button" ng-click="admin.saveAddress()">Save</button>
+            </div>
+        </div>
+        <div class="row mt-20" ng-if="admin.selected !== ''">
+            <div class="col-sm-12">
+                <p class="mt-5" ng-if="admin.address.updatedOn && admin.address.updatedBy" ng-init="admin.user.username = admin.address.updatedBy;admin.getByUsername()">Last updated on <b>{{admin.address.updatedOn|date:'dd/MM/yyyy h:mma'}}</b> by <b>{{(admin.user.name === admin.current.name)?'You':admin.user.name;}}</b></p>
+            </div>
+        </div>
+    </div>
+    <div ng-if="admin.index === 3">
+        <div class="row mb-20">
+            <div class="col-sm-12">
+                <h4>
+                    <button class="btn btn-danger btn-xs" type="button" ui-sref="admin({index:0, selected:''})"><i class="glyphicon glyphicon-home"></i></button>&nbsp;
+                    <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:2})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;
+                    <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:4})"><i class="glyphicon glyphicon-arrow-right"></i></button>&nbsp;&nbsp;
+                    <span ng-init="admin.vendor.id=admin.selected;admin.getContact();">Update Contact</span>
+                </h4>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Name:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.contact.name" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Email:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.contact.email" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Mobile:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.contact.mobile" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Phone: (04565)</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.contact.phone" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Facebook:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.contact.facebook" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Twitter:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.contact.twitter" />
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-sm-4">
+                <label>Website:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" ng-model="admin.contact.website" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-primary" type="button" ng-click="admin.saveContact()">Save</button>
+            </div>
+        </div>
+        <div class="row mt-20" ng-if="admin.selected !== ''">
+            <div class="col-sm-12">
+                <p class="mt-5" ng-if="admin.contact.updatedOn && admin.contact.updatedBy" ng-init="admin.user.username = admin.contact.updatedBy;admin.getByUsername()">Last updated on <b>{{admin.contact.updatedOn|date:'dd/MM/yyyy h:mma'}}</b> by <b>{{(admin.user.name === admin.current.name)?'You':admin.user.name;}}</b></p>
+            </div>
+        </div>
+    </div>
+    
+    <div ng-if="admin.index === 4" ng-init="admin.vendor.id=admin.selected;admin.getLogo();">
+        <div ng-if="admin.logo.images.length === 0" ng-init="admin.setLogoUrl()">
+
+            <div class="row mb-20">
+                <div class="col-sm-12">
+                    <h4>
+                        <button class="btn btn-danger btn-xs" type="button" ui-sref="admin({index:0, selected:''})"><i class="glyphicon glyphicon-home"></i></button>&nbsp;
+                        <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:3})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;
+                        <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:5})"><i class="glyphicon glyphicon-arrow-right"></i></button>&nbsp;&nbsp;
+                        <span>Upload Logo</span>
+                    </h4>
+                </div>
+            </div>
+            <hr>
+            <file-upload api-url="admin.logoUrl" on-complete="admin.getLogo()"></file-upload>
+        </div>
+        <div ng-if="admin.logo.images.length > 0">
+            <div class="row mb-20">
+                <div class="col-sm-12">
+                    <h4>
+                        <button class="btn btn-danger btn-xs" type="button" ui-sref="admin({index:0, selected:''})"><i class="glyphicon glyphicon-home"></i></button>&nbsp;
+                        <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:3})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;
+                        <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:5})"><i class="glyphicon glyphicon-arrow-right"></i></button>&nbsp;&nbsp;
+                        <span>Uploaded Logo</span>
+                    </h4>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <img ng-src="{{admin.logo.images[0].url}}" style="width:100px;"  uib-tooltip="Uploaded by {{admin.logo.images[0].updatedBy?admin.logo.images[0].updatedBy:'-'}} on {{admin.logo.images[0].updatedOn|date:'dd/MM/yyyy h:mma'}}"/>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button class="btn btn-default btn-xs mr-10" ng-click="admin.openImage('Logo',admin.logo.images[0].url);">
+                                <i class="glyphicon glyphicon-resize-full"></i>
+                            </button>
+                    <button class="btn btn-danger btn-xs" type="button" ng-click="admin.deleteGallery(admin.logo.images[0].key)"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="admin.index === 5" ng-init="admin.vendor.id=admin.selected;admin.getGallery();">
+        <div>
+            <div class="row mb-20">
+                <div class="col-sm-12">
+                    <h4>
+                        <button class="btn btn-danger btn-xs" type="button" ui-sref="admin({index:0, selected:''})"><i class="glyphicon glyphicon-home"></i></button>&nbsp;
+                        <button class="btn btn-warning btn-xs" type="button" ui-sref="admin({index:4})"><i class="glyphicon glyphicon-arrow-left"></i></button>&nbsp;
+                        <span>Gallery</span>
+                    </h4>
+                </div>
+            </div>
+            <hr>
+            <div ng-if="admin.gallery.images.length < 5" ng-init="admin.setGalleryUrl()">
+            <file-upload api-url="admin.galleryUrl" on-complete="admin.getGallery()"></file-upload>
+            <hr>
+            </div>
+        </div>
+        <div ng-if="admin.gallery.images.length > 0">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div style="width:120px;height:130px;border:#ccc solid 1px;display:inline-block;" class="mr-20 mb-20" ng-repeat="item in admin.gallery.images">
+                        <img ng-src="{{item.url}}" style="width:100px;height:80px;margin:10px;"  uib-tooltip="Uploaded by {{item.updatedBy?item.updatedBy:'-'}} on {{item.updatedOn|date:'dd/MM/yyyy h:mma'}}"/>
+                        <button class="btn btn-default btn-xs mr-10" ng-click="admin.openImage('Gallery',item.url);" style="margin:0 0 0 10px;">
+                                <i class="glyphicon glyphicon-resize-full"></i>
+                            </button>
+                        <button class="btn btn-danger btn-xs" type="button" ng-click="admin.deleteGallery(item.key)" style="margin:0 0 0 10px;"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

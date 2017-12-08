@@ -1,0 +1,28 @@
+<div class="app">
+    <div class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="logo">
+                        <img src="images/logo.jpg" width="50" />
+                    </div>
+                </div>
+                <div class="col-sm-6" ng-if="!app.user">
+                    <button class="btn btn-primary pull-right mt-20" ng-click="app.login()">Login</button>
+                </div>
+                <div class="col-sm-6" ng-if="app.user">
+                    <p class="pull-right mt-5 welcome-text">Welcome
+                        <b>{{app.user.name}}</b>
+                        <br>
+                        <a ui-sref="admin" class="btn btn-primary btn-xs mt-10 pull-right">Admin</a>
+                        <a class="btn btn-danger btn-xs mt-10 mr-10 pull-right" ng-click="app.logout()">Logout</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="container" ui-view>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+@import 'config';
+@import 'mixins';
+body,
+html {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    background: $body-background;
+}
+
+.custom-container {
+    padding: 20px;
+}
+
+.app {
+    width: 100%;
+    .header {
+        width: 100%;
+        background: $white-color;
+        padding-bottom: 10px;
+        .logo {
+            margin-top: 10px;
+        }
+        .welcome-text {
+            font-size: 12px;
+        }
+    }
+    .content {
+        h1 {
+            text-align: center;
+            padding: 200px 0;
+        }
+    }
+    
+}
+

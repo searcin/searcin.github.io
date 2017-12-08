@@ -1,0 +1,12 @@
+@import './../../config';
+@import './../../mixins';
+
+
+.admin-container {
+    background: $white-color;
+    padding: 20px;
+}
+
+.table {
+    background: #fff;
+}
